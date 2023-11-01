@@ -10,7 +10,7 @@ let Band = sequelize.define(
   },
   {
     sequelize: sequelize,
-    modelname: "band",
+    modelname: "Band",
   }
 );
 
