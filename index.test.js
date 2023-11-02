@@ -105,7 +105,9 @@ describe("Band, Musician, and Song Models", () => {
 describe("Association tests", () => {
   beforeAll(async () => {
     await sequelize.sync({ force: true });
+  });
 
+  test("can get Musicians from Bands", async () => {
     await Band.create({ name: "band1", genre: "pop" });
     await Band.create({ name: "band2", genre: "Rock" });
     await Musician.create({
@@ -123,15 +125,37 @@ describe("Association tests", () => {
       instrument: "Guitar",
       BandId: 2,
     });
-  });
 
-  test("can get Musicians from Bands", async () => {
     const foundBands = await Band.findAll();
-    for (const foundBands of Band) {
+
+    for (const band of foundBands) {
       const musicians = await foundBands.getMusician();
 
       expect(Array.isArray(Musician));
       expect(musicians).toBe(!null);
+    }
+  });
+
+  test("can associate songs with Bands", async () => {
+    await Band.create({ name: "band1", genre: "pop" });
+    await Band.create({ name: "band2", genre: "Rock" });
+    await Song.create({ title: "song1", year: 2022, length: 234 });
+    await Song.create({ title: "song2", year: 2023, length: 154 });
+
+    const bands = await Band.findAll();
+    const songs = await Song.findAll();
+
+    if (bands.length > 0 && songs.length > 0) {
+      const band = bands[0];
+      const song1 = songs[0];
+      const song2 = songs[1];
+
+      await band.addSong(song1);
+      await band.addSong(song2);
+
+      const associatedSongs = await band.getSongs();
+      expect(Array.isArray(associatedSongs));
+      expect(associatedSongs.length).toBe(2);
     }
   });
 });
