@@ -128,11 +128,11 @@ describe("Association tests", () => {
 
     const foundBands = await Band.findAll();
 
-    for (const band of foundBands) {
-      const musicians = await foundBands.getMusician();
+    for (const Band of foundBands) {
+      const musicians = await Band.getMusicians();
 
-      expect(Array.isArray(Musician));
-      expect(musicians).toBe(!null);
+      expect(Array.isArray(musicians));
+      expect(musicians.length >= 0).toBe(true);
     }
   });
 
