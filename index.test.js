@@ -101,3 +101,37 @@ describe("Band, Musician, and Song Models", () => {
     expect(destroyedItem).toBe(null);
   });
 });
+
+describe("Association tests", () => {
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+
+    await Band.create({ name: "band1", genre: "pop" });
+    await Band.create({ name: "band2", genre: "Rock" });
+    await Musician.create({
+      name: "Musician1",
+      instrument: "Guitar",
+      BandId: 1,
+    });
+    await Musician.create({
+      name: "Musician2",
+      instrument: "Drums",
+      BandId: 1,
+    });
+    await Musician.create({
+      name: "Musician3",
+      instrument: "Guitar",
+      BandId: 2,
+    });
+  });
+
+  test("can get Musicians from Bands", async () => {
+    const foundBands = await Band.findAll();
+    for (const foundBands of Band) {
+      const musicians = await foundBands.getMusician();
+
+      expect(Array.isArray(Musician));
+      expect(musicians).toBe(!null);
+    }
+  });
+});
